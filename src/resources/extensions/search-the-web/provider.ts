@@ -19,10 +19,10 @@ import { resolveSearchProviderFromPreferences } from '../gsd/preferences.js'
 // where the relative import '../../../app-paths.ts' doesn't resolve.
 const authFilePath = join(homedir(), '.gsd', 'agent', 'auth.json')
 
-export type SearchProvider = 'tavily' | 'brave' | 'ollama'
+export type SearchProvider = 'tavily' | 'brave' | 'ollama' | 'searxng'
 export type SearchProviderPreference = SearchProvider | 'auto'
 
-const VALID_PREFERENCES = new Set<string>(['tavily', 'brave', 'ollama', 'auto'])
+const VALID_PREFERENCES = new Set<string>(['tavily', 'brave', 'ollama', 'searxng', 'auto'])
 const PREFERENCE_KEY = 'search_provider'
 
 /** Returns the Tavily API key from the environment, or empty string if not set. */
@@ -47,6 +47,11 @@ export function braveHeaders(): Record<string, string> {
 /** Returns the Ollama API key from the environment, or empty string if not set. */
 export function getOllamaApiKey(): string {
   return process.env.OLLAMA_API_KEY || ''
+}
+
+/** Returns the SearXNG instance URL from the environment, or empty string if not set. */
+export function getSearXngUrl(): string {
+  return process.env.SEARXNG_URL || ''
 }
 
 /**
@@ -94,10 +99,12 @@ export function resolveSearchProvider(overridePreference?: string): SearchProvid
   const tavilyKey = getTavilyApiKey()
   const braveKey = getBraveApiKey()
   const ollamaKey = getOllamaApiKey()
+  const searxngUrl = getSearXngUrl()
 
   const hasTavily = tavilyKey.length > 0
   const hasBrave = braveKey.length > 0
   const hasOllama = ollamaKey.length > 0
+  const hasSearXng = searxngUrl.length > 0
 
   // Determine effective preference
   let pref: SearchProviderPreference
@@ -120,6 +127,7 @@ export function resolveSearchProvider(overridePreference?: string): SearchProvid
     if (hasTavily) return 'tavily'
     if (hasBrave) return 'brave'
     if (hasOllama) return 'ollama'
+    if (hasSearXng) return 'searxng'
     return null
   }
 
@@ -127,6 +135,7 @@ export function resolveSearchProvider(overridePreference?: string): SearchProvid
     if (hasTavily) return 'tavily'
     if (hasBrave) return 'brave'
     if (hasOllama) return 'ollama'
+    if (hasSearXng) return 'searxng'
     return null
   }
 
@@ -134,6 +143,7 @@ export function resolveSearchProvider(overridePreference?: string): SearchProvid
     if (hasBrave) return 'brave'
     if (hasTavily) return 'tavily'
     if (hasOllama) return 'ollama'
+    if (hasSearXng) return 'searxng'
     return null
   }
 
@@ -141,6 +151,15 @@ export function resolveSearchProvider(overridePreference?: string): SearchProvid
     if (hasOllama) return 'ollama'
     if (hasTavily) return 'tavily'
     if (hasBrave) return 'brave'
+    if (hasSearXng) return 'searxng'
+    return null
+  }
+
+  if (pref === 'searxng') {
+    if (hasSearXng) return 'searxng'
+    if (hasTavily) return 'tavily'
+    if (hasBrave) return 'brave'
+    if (hasOllama) return 'ollama'
     return null
   }
 

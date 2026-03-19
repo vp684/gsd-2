@@ -49,6 +49,7 @@ See the full [Changelog](./CHANGELOG.md) for details.
 Full documentation is available in the [`docs/`](./docs/) directory:
 
 - **[Getting Started](./docs/getting-started.md)** — install, first run, basic usage
+- **[Local Development](./docs/local-development.md)** — modify source code, build, test, and run locally
 - **[Auto Mode](./docs/auto-mode.md)** — autonomous execution deep-dive
 - **[Configuration](./docs/configuration.md)** — all preferences, models, git, and hooks
 - **[Token Optimization](./docs/token-optimization.md)** — profiles, context compression, complexity routing (v2.17)
